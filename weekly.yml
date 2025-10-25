@@ -1,0 +1,34 @@
+name: Weekly NYC Events Email
+
+on:
+  schedule:
+    - cron: "0 10 * * 1"  # Runs 6 AM Eastern (10 UTC) every Monday
+  workflow_dispatch:
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run scraper
+        run: python collector_v9.py
+        env:
+          TM_API_KEY: ${{ secrets.TM_API_KEY }}
+
+      - name: Send email
+        run: python send_email.py
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+          TO_EMAIL: ${{ secrets.TO_EMAIL }}
