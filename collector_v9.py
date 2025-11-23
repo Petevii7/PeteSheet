@@ -24,6 +24,9 @@ TM_API_KEY = os.getenv("TM_API_KEY")
 
 VENUES = [
     "Madison Square Garden",
+    "The Theater at Madison Square Garden",
+    "Hulu Theater at MSG"
+    "Madison Square Garden Theater"
     "Barclays Center",
     "UBS Arena",
     "Forest Hills Stadium",
@@ -43,7 +46,8 @@ VENUES = [
 SPORT_KEYWORDS = [
     "nba","nhl","mlb","nfl","football","basketball","baseball","hockey",
     "giants","jets","knicks","nets","rangers","islanders","mets","yankees",
-    "match","vs","tournament","championship","playoff", "john oliver", "rockettes", "jerry seinfeld"
+    "match","vs","tournament","championship","playoff", "john oliver", 
+    "rockettes", "jerry seinfeld", "Cirque du Soleil"
 ]
 
 CITY_BLACKLIST = [
@@ -146,15 +150,16 @@ def main()->List[Dict[str,Any]]:
     write_output(deduped)
     return deduped
 
-if __name__=="__main__":
+if __name__ == "__main__":
     try:
-        events=main()
+        events = main()
     except Exception as e:
         raise
+
     if events:
         try:
-            from send_email import send_email_dynamic
-            run_date=datetime.now().strftime("%Y-%m-%d")
-            send_email_dynamic(events,run_date)
+            from send_email_gmail import send_email_gmail
+            run_date = datetime.now().strftime("%Y-%m-%d")
+            send_email_gmail(events, run_date)
         except Exception as e:
-            print(f"\033[93m⚠️ Email skipped: {e}\033[0m")
+            print(f"⚠️ Email skipped: {e}")
